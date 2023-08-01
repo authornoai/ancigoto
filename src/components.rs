@@ -9,7 +9,7 @@ pub struct Figher
 #[derive(Component)]
 pub struct Direction
 {
-    pub value: Vec2I
+    pub value: IVec2
 }
 
 
@@ -17,3 +17,14 @@ pub struct Direction
 pub struct Ball{}
 #[derive(Component)]
 pub struct Tile{}
+
+//OLD DATA
+#[derive(Component)]
+pub struct Player {
+    pub speed: f32,
+}
+
+#[derive(Component)]
+pub struct Pig {
+    pub lifetime: Timer
+}
