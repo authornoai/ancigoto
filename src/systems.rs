@@ -5,8 +5,7 @@ use crate::components::*;
 use crate::resources::*;
 
 pub fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>
+    mut commands: Commands
 ){
     let mut camera = Camera2dBundle::default();
 
@@ -17,38 +16,15 @@ pub fn setup(
     };
 
     commands.spawn(camera);
-
-    let texture = asset_server.load("character.png");
-
-    commands.spawn((
-        SpriteBundle {
-            texture,
-            ..default()
-        },
-        Player { speed: 100.0 },
-    ));
 }
 
 pub fn character_movement(
     mut characters: Query<(&mut Transform, &Player)>,
-    input: Res<Input<KeyCode>>,
     time: Res<Time>,
 ){
     for (mut transform, player) in &mut characters {
         let movement_amount = player.speed * time.delta_seconds();
         let mut movement_dir: Vec2 = Vec2::new(0.0, 0.0);
-
-        if input.pressed(KeyCode::W) {
-            movement_dir.y = 1.0;
-        } else if input.pressed(KeyCode::S) {
-            movement_dir.y = -1.0;
-        }
-
-        if input.pressed(KeyCode::A) {
-            movement_dir.x = -1.0;
-        } else if input.pressed(KeyCode::D) {
-            movement_dir.x = 1.0;
-        }
 
         movement_dir *= movement_amount;
 
