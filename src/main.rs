@@ -2,10 +2,14 @@ pub mod components;
 pub mod resources;
 pub mod systems;
 
+mod duel;
+
 use resources::*;
 use systems::*;
 
 use bevy::prelude::*;
+
+use crate::duel::DuelPlugin;
 
 fn main() {
     App::new()
@@ -23,9 +27,19 @@ fn main() {
                 })
                 .build(),
         )
+        .add_plugins(DuelPlugin)
         .insert_resource(Money(100.0))
         .add_systems(Startup, setup)
         .add_systems(Update, character_movement)
         .add_systems(Update, (spawn_pig, pig_lifetime))
         .run();
+}
+
+#[derive(States, Debug, PartialEq, Eq, Clone, Copy, Hash, Default)]
+pub enum AppState
+{
+    #[default]
+    MainMenu,
+    Game,
+    GameEnd
 }
