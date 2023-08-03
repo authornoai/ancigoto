@@ -5,6 +5,8 @@ use bevy::prelude::*;
 pub struct TagDuelObject;
 
 // Movement
+#[derive(Component)]
+pub struct ForceAccum(pub Vec2);
 #[derive(Component, Default)]
 pub struct Dir(pub Vec2);
 #[derive(Component, Default)]

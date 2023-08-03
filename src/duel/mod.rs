@@ -4,10 +4,12 @@ use bevy::prelude::*;
 pub mod health;
 pub mod object;
 pub mod player;
+mod gravitation;
 
 //self
 mod systems;
 
+use self::gravitation::GravitationPlugin;
 use self::health::HealthPlugin;
 use self::player::PlayerPlugin;
 use self::systems::*;
@@ -20,6 +22,7 @@ impl Plugin for DuelPlugin
     {
         app
         .add_plugins((
+            GravitationPlugin,
             HealthPlugin,
             PlayerPlugin
         ))
