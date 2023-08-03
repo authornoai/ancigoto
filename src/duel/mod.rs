@@ -11,6 +11,7 @@ mod systems;
 
 use self::gravitation::GravitationPlugin;
 use self::health::HealthPlugin;
+use self::object::DuelObjectPlugin;
 use self::player::PlayerPlugin;
 use self::systems::*;
 
@@ -24,6 +25,7 @@ impl Plugin for DuelPlugin
         .add_plugins((
             GravitationPlugin,
             HealthPlugin,
+            DuelObjectPlugin,
             PlayerPlugin
         ))
         .add_systems(Startup, spawn_player);

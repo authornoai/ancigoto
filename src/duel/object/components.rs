@@ -5,7 +5,7 @@ use bevy::prelude::*;
 pub struct TagDuelObject;
 
 // Movement
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct ForceAccum(pub Vec2);
 #[derive(Component, Default)]
 pub struct Dir(pub Vec2);
@@ -19,6 +19,7 @@ pub struct MoveableBundle {
     pub dir: Dir,
     pub speed: Speed,
     pub acceleration: Acceleration,
+    pub force: ForceAccum
 }
 
 impl Default for MoveableBundle {
@@ -27,6 +28,7 @@ impl Default for MoveableBundle {
             dir: Default::default(),
             speed: Default::default(),
             acceleration: Default::default(),
+            force: Default::default()
         }
     }
 }
