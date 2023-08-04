@@ -9,11 +9,16 @@ use self::systems::*;
 
 pub struct CollisionPlugin;
 
-impl Plugin for CollisionPlugin
-{
-    fn build(&self, app: &mut App)
-    {
-        app.add_systems(Update, register_collisions)
-        .add_event::<OnCollision>();
+impl Plugin for CollisionPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            (
+                register_collisions,
+                apply_collision_move_to_force,
+                add_collision_move,
+            ),
+        )
+        .add_event::<EvOnCollision>();
     }
 }

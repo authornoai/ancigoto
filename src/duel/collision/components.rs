@@ -4,4 +4,4 @@ use bevy::prelude::*;
 pub struct AABB(pub Vec4);
 
 #[derive(Component, Default)]
-pub struct AABBTolerant(pub Vec4);
+pub struct CollisionLeave(pub Vec3);

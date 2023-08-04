@@ -32,7 +32,7 @@ fn spawn_ceiling(mut commands: Commands) {
         Transform {
             translation: Vec3 {
                 x: 0.0,
-                y: -100.0,
+                y: -64.0,
                 z: 0.0,
             },
             ..default()

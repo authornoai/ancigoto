@@ -1,3 +1,6 @@
+use bevy::prelude::*;
+use bevy_prototype_debug_lines::*;
+
 pub mod components;
 pub mod resources;
 pub mod systems;
@@ -6,8 +9,6 @@ mod duel;
 
 use resources::*;
 use systems::*;
-
-use bevy::prelude::*;
 
 use crate::duel::DuelPlugin;
 
@@ -27,6 +28,7 @@ fn main() {
                 })
                 .build(),
         )
+        .add_plugins(DebugLinesPlugin::default())
         .add_plugins(DuelPlugin)
         .insert_resource(Money(100.0))
         .add_systems(Startup, setup)
