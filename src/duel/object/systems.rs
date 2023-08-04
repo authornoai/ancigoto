@@ -9,26 +9,20 @@ pub fn apply_accel_to_speed(mut query: Query<(&mut Speed, &Acceleration)>) {
 }
 
 pub fn apply_speed_to_force(mut query: Query<(&mut ForceAccum, &Speed, &Dir)>) {
-    for (mut force, speed, dir) in &mut query
-    {
+    for (mut force, speed, dir) in &mut query {
         force.0 += dir.0.normalize_or_zero() * speed.0;
-        println!("{0} force with {1}", force.0, dir.0);
     }
 }
 
 pub fn apply_force_to_position(mut query: Query<(&mut Transform, &ForceAccum)>, time: Res<Time>) {
-    for (mut transform, force) in &mut query
-    {
+    for (mut transform, force) in &mut query {
         let force_xyz = Vec3::new(force.0.x, force.0.y, 0.0);
-        println!("{} is 3Vec force", force_xyz);
-
         transform.translation += force_xyz * time.delta_seconds();
     }
 }
 
-pub fn clear_force_accum(mut query: Query<&mut ForceAccum>)
-{
-    for mut force in &mut query{
+pub fn clear_force_accum(mut query: Query<&mut ForceAccum>) {
+    for mut force in &mut query {
         force.0 = Vec2::ZERO;
     }
 }

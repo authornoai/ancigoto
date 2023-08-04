@@ -13,6 +13,8 @@ pub struct Dir(pub Vec2);
 pub struct Speed(pub f32);
 #[derive(Component, Default)]
 pub struct Acceleration(pub f32);
+#[derive(Component, Default)]
+pub struct Mass(pub f32);
 
 #[derive(Bundle)]
 pub struct MoveableBundle {
