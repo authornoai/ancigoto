@@ -44,7 +44,7 @@ pub fn register_collisions(
             let a_pos = a.1.translation;
             let b_pos = b.1.translation;
 
-            println!("Collision");
+            
 
             //TODO: Mass comprassion and percentages
             let dir = a_pos - b_pos;
@@ -56,13 +56,15 @@ pub fn register_collisions(
 
             let result_entity_to_move: Entity;
             let result_vector_to_move: Vec3;
-            if size_result > 0.0 {
+            if size_result < 0.0 {
                 result_entity_to_move = a.0;
-                result_vector_to_move = -dir;
+                result_vector_to_move = dir;
             } else {
                 result_entity_to_move = b.0;
-                result_vector_to_move = dir;
+                result_vector_to_move = -dir;
             }
+
+            println!("Collision {0}, {1}, {2}", a_size, b_size, size_result);
 
             event_on_collision.send(EvOnCollision {
                 target_a: a.0,
@@ -107,9 +109,7 @@ pub fn add_collision_move(
     for ev in event_on_collision.iter() {
         commands
             .entity(ev.target_to_move)
-            .insert(CollisionLeave(ev.vector_to_move * 100.0));
-
-        println!("GOOO");
+            .insert(CollisionLeave(ev.vector_to_move));
     }
 }
 
@@ -120,5 +120,6 @@ pub fn apply_collision_move_to_force(
     for (entity, mut force, collision) in &mut query {
         force.0 += Vec2::new(collision.0.x, collision.0.y);
         commands.entity(entity).remove::<CollisionLeave>();
+        println!("H")
     }
 }
