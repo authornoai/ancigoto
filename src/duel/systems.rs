@@ -15,14 +15,14 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             texture,
             ..default()
         },
-        MoveableBundle { ..default() },
+        MoveableBundle::default(),
         FighterBundle {
             move_power: MovePower(Vec2::new(25.0, 600.0)),
             ..default()
         },
         TagPlayer,
         TagGravity,
-        AABB(Vec4::new(-8.0, -8.0, 8.0, 8.0)),
+        AABB(Rect::new(-8.0, -8.0, 8.0, 8.0)),
         NextPosition::default(),
     ));
 
@@ -33,7 +33,7 @@ fn spawn_ceiling(mut commands: Commands) {
     let pos = Vec3::new(0.0, -64.0, 0.0);
 
     commands.spawn((
-        AABB(Vec4::new(-256.0, -16.0, 256.0, 16.0)),
+        AABB(Rect::new(-256.0, -16.0, 256.0, 16.0)),
         Transform {
             translation: pos,
             ..default()
@@ -42,15 +42,28 @@ fn spawn_ceiling(mut commands: Commands) {
         NextPosition(pos),
     ));
 
-    let pos_b = Vec3::new(64.0, 256.0, 0.0);
+    let pos_b = Vec3::new(64.0, 150.0, 0.0);
 
     commands.spawn((
-        AABB(Vec4::new(-16.0, -256.0, 16.0, 256.0)),
+        AABB(Rect::new(-16.0, -256.0, 16.0, 256.0)),
         Transform {
             translation: pos_b,
             ..default()
         },
         TagStatic,
         NextPosition(pos_b),
+    ));
+
+    let pos_c = Vec3::new(-32.0, 512.0, 0.0);
+
+    commands.spawn((
+        AABB(Rect::new(-4.0, -4.0, 4.0, 4.0)),
+        Transform{
+            translation: pos_c,
+            ..default()
+        },
+        MoveableBundle::default(),
+        TagGravity,
+        NextPosition(pos_c)
     ));
 }

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Component, Default)]
-pub struct AABB(pub Vec4);
+pub struct AABB(pub Rect);
 
 #[derive(Component, Default)]
 pub struct TagGrounded;

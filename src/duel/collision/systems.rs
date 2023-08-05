@@ -1,4 +1,4 @@
-use bevy::ecs::query::Has;
+use bevy::{ecs::query::Has, utils::petgraph::matrix_graph::Zero};
 use bevy::prelude::*;
 
 use super::components::AABB;
@@ -7,26 +7,35 @@ use crate::{
         collision::components::TagGrounded,
         object::components::{NextPosition, TagStatic},
     },
-    shared::utils::utils_aabb_to_vec4,
+    shared::utils::utils_aabb_to_global_rect,
 };
 
-fn utils_box_vs_box(a: Vec4, b: Vec4) -> bool {
-    return a.x < b.z && b.x < a.z && a.y < b.w && b.y < a.w;
+fn utils_rect_vs_rect(a: Rect, b: Rect) -> bool {
+    return a.min.x < b.max.x && b.min.x < a.max.x && a.min.y < b.max.y && b.min.y < a.max.y;
 }
 
-fn utils_get_resolve_vector(a: Vec4, b: Vec4) -> Vec3 {
+fn utils_get_resolve_vector(a: Rect, b: Rect) -> Vec3 {
     let mut result = Vec3::ZERO;
 
-    if a.x < b.x {
-        result.x = b.x - a.z
-    } else if a.z > b.z {
-        result.x = b.z - a.x
+    if a.min.x < b.min.x {
+        result.x = b.min.x - a.max.x
+    } else if a.max.x > b.max.x {
+        result.x = b.max.x - a.min.x
     }
 
-    if a.y < b.y {
-        result.y = b.y - a.w
-    } else if a.w > b.w {
-        result.y = b.w - a.y
+    if a.min.y < b.min.y {
+        result.y = b.min.y - a.max.y
+    } else if a.max.y > b.max.y {
+        result.y = b.max.y - a.min.y
+    }
+
+    if !result.x.is_zero() && !result.y.is_zero()
+    {
+        if result.y.abs() > result.x.abs() {
+            result.y = 0.0;
+        } else {
+            result.x = 0.0;
+        }
     }
 
     return result;
@@ -45,14 +54,14 @@ pub fn handle_collisions(
         let a_pos = a.1 .0;
         let b_pos = b.1 .0;
 
-        let a_as_box = utils_aabb_to_vec4(&a.2, a_pos);
-        let b_as_box = utils_aabb_to_vec4(&b.2, b_pos);
+        let a_as_box = utils_aabb_to_global_rect(&a.2, a_pos);
+        let b_as_box = utils_aabb_to_global_rect(&b.2, b_pos);
 
-        let result = utils_box_vs_box(a_as_box, b_as_box);
+        let result = utils_rect_vs_rect(a_as_box, b_as_box);
         if result {
             //TODO: Mass comprassion and percentages
-            let a_size = Vec2::new(a_as_box.z - a_as_box.x, a_as_box.w - a_as_box.y);
-            let b_size = Vec2::new(b_as_box.z - b_as_box.x, b_as_box.w - b_as_box.y);
+            let a_size = a_as_box.size();
+            let b_size = b_as_box.size();
 
             let size_diff = a_size - b_size;
             let size_result = size_diff.x + size_diff.y;
@@ -69,8 +78,8 @@ pub fn handle_collisions(
 }
 
 fn handle_resolution(
-    box_main: Vec4,
-    box_second: Vec4,
+    box_main: Rect,
+    box_second: Rect,
     entity_main: &mut (Entity, Mut<'_, NextPosition>, &AABB, bool),
     commands: &mut Commands,
 ) {
