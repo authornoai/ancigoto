@@ -4,7 +4,6 @@ pub mod components;
 pub mod events;
 mod systems;
 
-use self::events::*;
 use self::systems::*;
 
 use super::object::systems::apply_force_to_next_position;
@@ -16,11 +15,8 @@ impl Plugin for CollisionPlugin {
         app.add_systems(
             Update,
             (
-                register_collisions,
-                apply_collision_move_to_force,
-                add_collision_move,
+                handle_collisions
             ).after(apply_force_to_next_position),
-        )
-        .add_event::<EvOnCollision>();
+        );
     }
 }

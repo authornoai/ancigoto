@@ -39,4 +39,16 @@ fn spawn_ceiling(mut commands: Commands) {
         TagStatic,
         NextPosition(pos)
     ));
+
+    let pos_b = Vec3::new(64.0, -128.0, 0.0);
+
+    commands.spawn((
+        AABB(Vec4::new(-16.0, -256.0, 16.0, 256.0)),
+        Transform {
+            translation: pos_b,
+            ..default()
+        },
+        TagStatic,
+        NextPosition(pos_b)
+    ));
 }

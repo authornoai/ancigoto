@@ -1,10 +1,11 @@
+use bevy::ecs::query::Has;
 use bevy::prelude::*;
 use bevy_prototype_debug_lines::DebugLines;
 
-use crate::duel::object::components::NextPosition;
+use crate::duel::object::components::{NextPosition, TagStatic};
 use crate::shared::utils::debug_draw_box;
 
-use super::components::{CollisionLeave, AABB};
+use super::components::AABB;
 use super::events::*;
 
 fn utils_aabb_to_vec4(aabb: &AABB, position: Vec3) -> Vec4 {
@@ -22,13 +23,31 @@ fn utils_box_vs_box(a: Vec4, b: Vec4) -> bool {
     return a.x < b.z && b.x < a.z && a.y < b.w && b.y < a.w;
 }
 
-pub fn register_collisions(
-    query: Query<(Entity, &NextPosition, &AABB)>,
-    mut event_on_collision: EventWriter<EvOnCollision>,
+fn utils_get_resolve_vector(a: Vec4, b: Vec4) -> Vec3 {
+    let mut result = Vec3::ZERO;
+
+    if a.x < b.x {
+        result.x = b.x - a.z
+    } else if a.z > b.z {
+        result.x = b.z - a.x
+    }
+
+    if a.y < b.y {
+        result.y = b.y - a.w
+    } else if a.w > b.w {
+        result.y = b.w - a.y
+    }
+
+    return result;
+}
+
+pub fn handle_collisions(
+    mut query: Query<(Entity, &mut NextPosition, &AABB, Has<TagStatic>)>,
     mut lines: ResMut<DebugLines>,
 ) {
-    for [a, b] in query.iter_combinations() {
-        if a.0 == b.0 {
+    let mut combinations = query.iter_combinations_mut();
+    while let Some([mut a, mut b]) = combinations.fetch_next() {
+        if a.0 == b.0 || (a.3 && b.3) {
             continue;
         }
 
@@ -44,50 +63,19 @@ pub fn register_collisions(
         let result = utils_box_vs_box(a_as_box, b_as_box);
         if result {
             //TODO: Mass comprassion and percentages
-            let dir = a_pos - b_pos;
             let a_size = Vec2::new(a_as_box.z - a_as_box.x, a_as_box.w - a_as_box.y);
             let b_size = Vec2::new(b_as_box.z - b_as_box.x, b_as_box.w - b_as_box.y);
 
             let size_diff = a_size - b_size;
             let size_result = size_diff.x + size_diff.y;
 
-            let result_entity_to_move: Entity;
-            let result_vector_to_move: Vec3;
             if size_result < 0.0 {
-                result_entity_to_move = a.0;
-                result_vector_to_move = dir;
+                a.1 .0 += utils_get_resolve_vector(a_as_box, b_as_box);
             } else {
-                result_entity_to_move = b.0;
-                result_vector_to_move = -dir;
+                b.1 .0 += utils_get_resolve_vector(b_as_box, a_as_box);
             }
 
             println!("Collision {0}, {1}, {2}", a_size, b_size, size_result);
-
-            event_on_collision.send(EvOnCollision {
-                target_to_move: result_entity_to_move,
-                vector_to_move: result_vector_to_move,
-            });
         }
-    }
-}
-
-pub fn add_collision_move(
-    mut event_on_collision: EventReader<EvOnCollision>,
-    mut commands: Commands,
-) {
-    for ev in event_on_collision.iter() {
-        commands
-            .entity(ev.target_to_move)
-            .insert(CollisionLeave(ev.vector_to_move));
-    }
-}
-
-pub fn apply_collision_move_to_force(
-    mut query: Query<(Entity, &mut NextPosition, &CollisionLeave)>,
-    mut commands: Commands,
-) {
-    for (entity, mut position, collision) in &mut query {
-        position.0 += collision.0;
-        commands.entity(entity).remove::<CollisionLeave>();
     }
 }
