@@ -7,6 +7,7 @@ mod gravitation;
 pub mod health;
 pub mod object;
 pub mod player;
+pub mod fighter;
 
 //self
 mod systems;
@@ -17,6 +18,7 @@ use self::gravitation::GravitationPlugin;
 use self::health::HealthPlugin;
 use self::object::DuelObjectPlugin;
 use self::player::PlayerPlugin;
+use self::fighter::FighterPlugin;
 
 use self::systems::*;
 
@@ -29,6 +31,7 @@ impl Plugin for DuelPlugin {
             CollisionPlugin,
             HealthPlugin,
             DuelObjectPlugin,
+            FighterPlugin,
             PlayerPlugin,
             DuelDebugPlugin,
         ))

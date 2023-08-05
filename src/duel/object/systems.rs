@@ -2,15 +2,17 @@ use bevy::prelude::*;
 
 use super::components::*;
 
-pub fn apply_accel_to_speed(mut query: Query<(&mut Speed, &Acceleration)>) {
-    for (mut speed, acceleration) in &mut query {
+pub fn apply_accel_to_speed(mut query: Query<(&mut Speed, &mut Acceleration)>) {
+    for (mut speed, mut acceleration) in &mut query {
         speed.0 += acceleration.0;
+        speed.0 *= 0.9;
+        acceleration.0 = Vec2::ZERO;
     }
 }
 
-pub fn apply_speed_to_force(mut query: Query<(&mut ForceAccum, &Speed, &Dir)>) {
-    for (mut force, speed, dir) in &mut query {
-        force.0 += dir.0.normalize_or_zero() * speed.0;
+pub fn apply_speed_to_force(mut query: Query<(&mut ForceAccum, &Speed)>) {
+    for (mut force, speed) in &mut query {
+        force.0 += speed.0;
     }
 }
 

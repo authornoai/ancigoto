@@ -2,6 +2,7 @@ use bevy::asset::AssetServer;
 use bevy::prelude::*;
 
 use super::collision::components::AABB;
+use super::fighter::components::{FighterBundle, MovePower};
 use super::gravitation::components::TagGravity;
 use super::object::components::*;
 use super::player::components::TagPlayer;
@@ -14,14 +15,15 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             texture,
             ..default()
         },
-        MoveableBundle {
-            speed: Speed(100.0),
+        MoveableBundle { ..default() },
+        FighterBundle {
+            move_power: MovePower(Vec2::new(100.0, 100.0)),
             ..default()
         },
         TagPlayer,
         TagGravity,
         AABB(Vec4::new(-16.0, -16.0, 16.0, 16.0)),
-        NextPosition::default()
+        NextPosition::default(),
     ));
 
     spawn_ceiling(commands);
@@ -37,7 +39,7 @@ fn spawn_ceiling(mut commands: Commands) {
             ..default()
         },
         TagStatic,
-        NextPosition(pos)
+        NextPosition(pos),
     ));
 
     let pos_b = Vec3::new(64.0, -128.0, 0.0);
@@ -49,6 +51,6 @@ fn spawn_ceiling(mut commands: Commands) {
             ..default()
         },
         TagStatic,
-        NextPosition(pos_b)
+        NextPosition(pos_b),
     ));
 }
