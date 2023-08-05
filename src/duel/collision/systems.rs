@@ -3,7 +3,10 @@ use bevy::prelude::*;
 
 use super::components::AABB;
 use crate::{
-    duel::object::components::{NextPosition, TagStatic},
+    duel::{
+        collision::components::TagGrounded,
+        object::components::{NextPosition, TagStatic},
+    },
     shared::utils::utils_aabb_to_vec4,
 };
 
@@ -29,7 +32,10 @@ fn utils_get_resolve_vector(a: Vec4, b: Vec4) -> Vec3 {
     return result;
 }
 
-pub fn handle_collisions(mut query: Query<(Entity, &mut NextPosition, &AABB, Has<TagStatic>)>) {
+pub fn handle_collisions(
+    mut query: Query<(Entity, &mut NextPosition, &AABB, Has<TagStatic>)>,
+    mut commands: Commands,
+) {
     let mut combinations = query.iter_combinations_mut();
     while let Some([mut a, mut b]) = combinations.fetch_next() {
         if a.0 == b.0 || (a.3 && b.3) {
@@ -52,12 +58,32 @@ pub fn handle_collisions(mut query: Query<(Entity, &mut NextPosition, &AABB, Has
             let size_result = size_diff.x + size_diff.y;
 
             if size_result < 0.0 {
-                a.1 .0 += utils_get_resolve_vector(a_as_box, b_as_box);
+                handle_resolution(a_as_box, b_as_box, &mut a, &mut commands);
             } else {
-                b.1 .0 += utils_get_resolve_vector(b_as_box, a_as_box);
+                handle_resolution(b_as_box, a_as_box, &mut b, &mut commands);
             }
 
             println!("Collision {0}, {1}, {2}", a_size, b_size, size_result);
         }
+    }
+}
+
+fn handle_resolution(
+    box_main: Vec4,
+    box_second: Vec4,
+    entity_main: &mut (Entity, Mut<'_, NextPosition>, &AABB, bool),
+    commands: &mut Commands,
+) {
+    let resolve = utils_get_resolve_vector(box_main, box_second);
+    entity_main.1 .0 += resolve;
+
+    if resolve.y > 0.0 {
+        commands.entity(entity_main.0).insert(TagGrounded);
+    }
+}
+
+pub fn remove_grounded(mut commands: Commands, query: Query<(Entity, With<TagGrounded>)>) {
+    for (e, _) in &query {
+        commands.entity(e).remove::<TagGrounded>();
     }
 }

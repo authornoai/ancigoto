@@ -1,14 +1,11 @@
 use bevy::prelude::*;
 use bevy_prototype_debug_lines::*;
 
-pub mod components;
-pub mod resources;
 pub mod systems;
 
 mod duel;
 pub mod shared;
 
-use resources::*;
 use systems::*;
 
 use crate::duel::DuelPlugin;
@@ -31,10 +28,7 @@ fn main() {
         )
         .add_plugins(DebugLinesPlugin::default())
         .add_plugins(DuelPlugin)
-        .insert_resource(Money(100.0))
         .add_systems(Startup, setup)
-        .add_systems(Update, character_movement)
-        .add_systems(Update, (spawn_pig, pig_lifetime))
         .run();
 }
 

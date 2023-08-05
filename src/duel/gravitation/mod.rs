@@ -14,7 +14,7 @@ impl Plugin for GravitationPlugin
     fn build(&self, app: &mut App)
     {
         app
-        .insert_resource(GravityForce(Vec2::new(0.0, -9.8)))
+        .insert_resource(GravityForce(Vec2::new(0.0, -90.0)))
         .add_systems(Update, apply_gravity);
     }
 }

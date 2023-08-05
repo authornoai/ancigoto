@@ -14,9 +14,7 @@ impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (
-                handle_collisions
-            ).after(apply_force_to_next_position),
+            (remove_grounded, handle_collisions).after(apply_force_to_next_position),
         );
     }
 }
