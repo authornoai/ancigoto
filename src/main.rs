@@ -6,6 +6,7 @@ pub mod resources;
 pub mod systems;
 
 mod duel;
+pub mod shared;
 
 use resources::*;
 use systems::*;

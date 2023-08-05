@@ -7,6 +7,8 @@ mod systems;
 use self::events::*;
 use self::systems::*;
 
+use super::object::systems::apply_force_to_next_position;
+
 pub struct CollisionPlugin;
 
 impl Plugin for CollisionPlugin {
@@ -17,7 +19,7 @@ impl Plugin for CollisionPlugin {
                 register_collisions,
                 apply_collision_move_to_force,
                 add_collision_move,
-            ),
+            ).after(apply_force_to_next_position),
         )
         .add_event::<EvOnCollision>();
     }
