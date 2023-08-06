@@ -46,11 +46,14 @@ pub fn handle_collisions(
     mut commands: Commands,
 ) {
     let mut combinations = query.iter_combinations_mut();
-    while let Some([mut a, mut b]) = combinations.fetch_next() {
+    while let Some([a, b]) = combinations.fetch_next() {
         let a_is_static = a.3;
         let b_is_static = b.3;
 
-        if a.0 == b.0 || (a_is_static && b_is_static) {
+        let a_entity = a.0;
+        let b_entity = b.0;
+
+        if a_entity == b_entity || (a_is_static && b_is_static) {
             continue;
         }
 
@@ -62,35 +65,40 @@ pub fn handle_collisions(
 
         let result = utils_rect_vs_rect(a_as_box, b_as_box);
         if result {
-            //TODO: Mass comprassion and percentages
+            let a_resolution = utils_get_resolve_vector(a_as_box, b_as_box);
+            let b_resolution = utils_get_resolve_vector(b_as_box, a_as_box);
+
             let a_size = a_as_box.size();
             let b_size = b_as_box.size();
 
-            let size_diff = a_size - b_size;
-            let size_result = size_diff.x + size_diff.y;
+            let target_e: Entity;
+            let mut target_next_pos: Mut<NextPosition>;
+            let target_resolve: Vec3;
 
-            if size_result < 0.0 {
-                handle_resolution(a_as_box, b_as_box, &mut a, &mut commands);
+            if b_resolution.y > 0.0 {
+                target_e = b_entity;
+                target_next_pos = b.1;
+                target_resolve = b_resolution;
+            } else if a_resolution.y > 0.0 {
+                target_e = a_entity;
+                target_next_pos = a.1;
+                target_resolve = a_resolution;
+            } else if (a_size - b_size).length_squared() > 0.0 {
+                target_e = b_entity;
+                target_next_pos = b.1;
+                target_resolve = b_resolution;
             } else {
-                handle_resolution(b_as_box, a_as_box, &mut b, &mut commands);
+                target_e = a_entity;
+                target_next_pos = a.1;
+                target_resolve = a_resolution;
             }
 
-            println!("Collision {0}, {1}, {2}", a_size, b_size, size_result);
+            target_next_pos.0 += target_resolve;
+
+            if target_resolve.y > 0.0 {
+                commands.entity(target_e).insert(TagGrounded);
+            }
         }
-    }
-}
-
-fn handle_resolution(
-    box_main: Rect,
-    box_second: Rect,
-    entity_main: &mut (Entity, Mut<'_, NextPosition>, &AABB, bool),
-    commands: &mut Commands,
-) {
-    let resolve = utils_get_resolve_vector(box_main, box_second);
-    entity_main.1 .0 += resolve;
-
-    if resolve.y > 0.0 {
-        commands.entity(entity_main.0).insert(TagGrounded);
     }
 }
 
