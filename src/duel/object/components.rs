@@ -4,12 +4,6 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct TagDuelObject;
 
-#[derive(Component, Default)]
-pub struct TagStatic;
-
-#[derive(Component, Default)]
-pub struct TagSemiStatic;
-
 // Movement
 #[derive(Component, Default)]
 pub struct ForceAccum(pub Vec2);
@@ -22,9 +16,6 @@ pub struct Acceleration(pub Vec2);
 
 #[derive(Component, Default)]
 pub struct Mass(pub f32);
-
-#[derive(Component, Default)]
-pub struct NextPosition(pub Vec3);
 
 #[derive(Bundle)]
 pub struct MoveableBundle {

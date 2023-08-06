@@ -1,9 +1,8 @@
 use bevy::asset::AssetServer;
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::{RigidBody, Collider, Restitution};
 
-use super::collision::components::AABB;
 use super::fighter::components::{FighterBundle, MovePower};
-use super::gravitation::components::*;
 use super::object::components::*;
 use super::player::components::TagPlayer;
 
@@ -21,9 +20,9 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         },
         TagPlayer,
-        TagGravity,
-        AABB(Rect::new(-8.0, -8.0, 8.0, 8.0)),
-        NextPosition::default(),
+        RigidBody::Dynamic,
+        Collider::ball(16.0),
+        Restitution::coefficient(0.7)
     ));
 
     spawn_ceiling(commands);
@@ -33,40 +32,25 @@ fn spawn_ceiling(mut commands: Commands) {
     let pos = Vec3::new(0.0, -64.0, 0.0);
 
     commands.spawn((
-        AABB(Rect::new(-256.0, -16.0, 256.0, 16.0)),
-        Transform {
-            translation: pos,
-            ..default()
-        },
-        TagStatic,
-        NextPosition(pos),
+        Collider::cuboid(128.0, 16.0),
+        TransformBundle::from(Transform::from_translation(pos))
     ));
 
-    let pos_b = Vec3::new(64.0, 150.0, 0.0);
+    let pos = Vec3::new(64.0, 150.0, 0.0);
 
     commands.spawn((
-        AABB(Rect::new(-16.0, -256.0, 16.0, 256.0)),
-        Transform {
-            translation: pos_b,
-            ..default()
-        },
-        TagStatic,
-        NextPosition(pos_b),
+        Collider::cuboid(16.0, 128.0),
+        TransformBundle::from(Transform::from_translation(pos))
     ));
 
     for i in 0..4 {
-        let pos_c = Vec3::new(-32.0, 512.0 + 32.0 * i as f32, 0.0);
+        let pos = Vec3::new(-32.0, 512.0 + 32.0 * i as f32, 0.0);
 
         commands.spawn((
-            AABB(Rect::new(-4.0, -4.0, 4.0, 4.0)),
-            Transform {
-                translation: pos_c,
-                ..default()
-            },
+            Collider::cuboid(4.0, 4.0),
+            RigidBody::Dynamic,
+            TransformBundle::from(Transform::from_translation(pos)),
             MoveableBundle::default(),
-            TagGravity,
-            TagSemiStatic,
-            NextPosition(pos_c),
         ));
     }
 }
