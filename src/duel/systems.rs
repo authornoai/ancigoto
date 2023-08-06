@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use super::collision::components::AABB;
 use super::fighter::components::{FighterBundle, MovePower};
-use super::gravitation::components::TagGravity;
+use super::gravitation::components::*;
 use super::object::components::*;
 use super::player::components::TagPlayer;
 
@@ -54,16 +54,19 @@ fn spawn_ceiling(mut commands: Commands) {
         NextPosition(pos_b),
     ));
 
-    let pos_c = Vec3::new(-32.0, 512.0, 0.0);
+    for i in 0..4 {
+        let pos_c = Vec3::new(-32.0, 512.0 + 32.0 * i as f32, 0.0);
 
-    commands.spawn((
-        AABB(Rect::new(-4.0, -4.0, 4.0, 4.0)),
-        Transform{
-            translation: pos_c,
-            ..default()
-        },
-        MoveableBundle::default(),
-        TagGravity,
-        NextPosition(pos_c)
-    ));
+        commands.spawn((
+            AABB(Rect::new(-4.0, -4.0, 4.0, 4.0)),
+            Transform {
+                translation: pos_c,
+                ..default()
+            },
+            MoveableBundle::default(),
+            TagGravity,
+            TagSemiStatic,
+            NextPosition(pos_c),
+        ));
+    }
 }

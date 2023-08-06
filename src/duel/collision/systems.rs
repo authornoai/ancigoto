@@ -1,7 +1,8 @@
-use bevy::{ecs::query::Has, utils::petgraph::matrix_graph::Zero};
 use bevy::prelude::*;
+use bevy::{ecs::query::Has, utils::petgraph::matrix_graph::Zero};
 
 use super::components::AABB;
+
 use crate::{
     duel::{
         collision::components::TagGrounded,
@@ -29,8 +30,7 @@ fn utils_get_resolve_vector(a: Rect, b: Rect) -> Vec3 {
         result.y = b.max.y - a.min.y
     }
 
-    if !result.x.is_zero() && !result.y.is_zero()
-    {
+    if !result.x.is_zero() && !result.y.is_zero() {
         if result.y.abs() > result.x.abs() {
             result.y = 0.0;
         } else {
@@ -47,7 +47,10 @@ pub fn handle_collisions(
 ) {
     let mut combinations = query.iter_combinations_mut();
     while let Some([mut a, mut b]) = combinations.fetch_next() {
-        if a.0 == b.0 || (a.3 && b.3) {
+        let a_is_static = a.3;
+        let b_is_static = b.3;
+
+        if a.0 == b.0 || (a_is_static && b_is_static) {
             continue;
         }
 

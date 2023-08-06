@@ -4,8 +4,11 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct TagDuelObject;
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct TagStatic;
+
+#[derive(Component, Default)]
+pub struct TagSemiStatic;
 
 // Movement
 #[derive(Component, Default)]
