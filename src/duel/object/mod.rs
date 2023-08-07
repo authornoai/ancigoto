@@ -12,9 +12,9 @@ impl Plugin for DuelObjectPlugin {
         app.add_systems(
             Update,
             (
-                apply_accel_to_speed,
-                apply_speed_to_force,
-                clear_force_accum,
+                clear_external_impulses,
+                apply_desire_move_to_rigidbody,
+                clear_desire_move,
             )
                 .chain(),
         );

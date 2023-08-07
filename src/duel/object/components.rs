@@ -4,32 +4,18 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct TagDuelObject;
 
-// Movement
 #[derive(Component, Default)]
-pub struct ForceAccum(pub Vec2);
-
-#[derive(Component, Default)]
-pub struct Speed(pub Vec2);
-
-#[derive(Component, Default)]
-pub struct Acceleration(pub Vec2);
-
-#[derive(Component, Default)]
-pub struct Mass(pub f32);
+pub struct DesireMove(pub Vec2);
 
 #[derive(Bundle)]
 pub struct MoveableBundle {
-    pub speed: Speed,
-    pub acceleration: Acceleration,
-    pub force: ForceAccum
+    pub desire_move: DesireMove,
 }
 
 impl Default for MoveableBundle {
     fn default() -> Self {
         Self {
-            speed: Default::default(),
-            acceleration: Default::default(),
-            force: Default::default()
+            desire_move: Default::default(),
         }
     }
 }

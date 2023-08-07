@@ -1,22 +1,24 @@
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::{ExternalImpulse, RigidBody};
 
 use super::components::*;
 
-pub fn apply_accel_to_speed(mut query: Query<(&mut Speed, &mut Acceleration)>) {
-    for (mut speed, mut acceleration) in &mut query {
-        speed.0 += acceleration.0;
-        speed.0 *= 0.9;
-        acceleration.0 = Vec2::ZERO;
+pub fn apply_desire_move_to_rigidbody(
+    mut query: Query<(&mut ExternalImpulse, &DesireMove, With<RigidBody>)>,
+) {
+    let drag = 0.9;
+    for (mut char, move_desire, _) in &mut query {
+        char.impulse = move_desire.0 * drag;
     }
 }
 
-pub fn apply_speed_to_force(mut query: Query<(&mut ForceAccum, &Speed)>) {
-    for (mut force, speed) in &mut query {
-        force.0 += speed.0;
+pub fn clear_external_impulses(mut query: Query<&mut ExternalImpulse>) {
+    for mut imp in &mut query {
+        imp.impulse = Vec2::ZERO;
     }
 }
 
-pub fn clear_force_accum(mut query: Query<&mut ForceAccum>) {
+pub fn clear_desire_move(mut query: Query<&mut DesireMove>) {
     for mut force in &mut query {
         force.0 = Vec2::ZERO;
     }

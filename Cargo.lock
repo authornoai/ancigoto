@@ -147,6 +147,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ancigoto"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_prototype_debug_lines",
+ "bevy_rapier2d",
+]
+
+[[package]]
 name = "android-activity"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2587,15 +2596,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f44155e7fb718d3cfddcf70690b2b51ac4412f347cd9e4fbe511abe9cd7b5f2"
 dependencies = [
  "cc",
-]
-
-[[package]]
-name = "office_nindou"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_prototype_debug_lines",
- "bevy_rapier2d",
 ]
 
 [[package]]
