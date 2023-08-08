@@ -15,7 +15,7 @@ pub struct MoveableBundle {
 impl Default for MoveableBundle {
     fn default() -> Self {
         Self {
-            desire_move: Default::default(),
+            desire_move: Default::default()
         }
     }
 }

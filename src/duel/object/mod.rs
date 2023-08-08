@@ -12,7 +12,6 @@ impl Plugin for DuelObjectPlugin {
         app.add_systems(
             Update,
             (
-                clear_external_impulses,
                 apply_desire_move_to_rigidbody,
                 clear_desire_move,
             )

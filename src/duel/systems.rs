@@ -1,6 +1,6 @@
 use bevy::asset::AssetServer;
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::{RigidBody, Collider, Ccd, LockedAxes, ExternalImpulse};
+use bevy_rapier2d::prelude::{RigidBody, Collider, Ccd, LockedAxes, Velocity, ExternalForce, GravityScale};
 
 use super::fighter::components::{FighterBundle, MovePower};
 use super::object::components::*;
@@ -16,15 +16,17 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
         MoveableBundle::default(),
         FighterBundle {
-            move_power: MovePower(Vec2::new(0.1, 3.0)),
+            move_power: MovePower(Vec2::new(4.0, 200.0)),
             ..default()
         },
         TagPlayer,
         Collider::cuboid(8.0, 8.0),
         RigidBody::Dynamic,
-        ExternalImpulse::default(),
+        ExternalForce::default(),
         Ccd::enabled(),
+        Velocity::default(),
         LockedAxes::ROTATION_LOCKED,
+        GravityScale(4.0)
     ));
 
     spawn_ceiling(commands);
