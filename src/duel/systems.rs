@@ -1,6 +1,8 @@
 use bevy::asset::AssetServer;
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::{RigidBody, Collider, Ccd, LockedAxes, Velocity, ExternalForce, GravityScale};
+use bevy_rapier2d::prelude::{
+    Ccd, Collider, ExternalForce, GravityScale, LockedAxes, RigidBody, Velocity,
+};
 
 use super::fighter::components::{FighterBundle, MovePower};
 use super::object::components::*;
@@ -14,7 +16,13 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             texture,
             ..default()
         },
-        MoveableBundle::default(),
+        MoveableBundle {
+            ground_raycast_pos: GroundRaycastPos {
+                left_pos: Vec2::new(-7.0, -4.0),
+                right_pos: Vec2::new(7.0, -4.0),
+            },
+            ..default()
+        },
         FighterBundle {
             move_power: MovePower(Vec2::new(4.0, 200.0)),
             ..default()
@@ -26,7 +34,7 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
         Ccd::enabled(),
         Velocity::default(),
         LockedAxes::ROTATION_LOCKED,
-        GravityScale(4.0)
+        GravityScale(4.0),
     ));
 
     spawn_ceiling(commands);
@@ -37,14 +45,14 @@ fn spawn_ceiling(mut commands: Commands) {
 
     commands.spawn((
         Collider::cuboid(128.0, 16.0),
-        TransformBundle::from(Transform::from_translation(pos))
+        TransformBundle::from(Transform::from_translation(pos)),
     ));
 
     let pos = Vec3::new(64.0, 150.0, 0.0);
 
     commands.spawn((
         Collider::cuboid(16.0, 128.0),
-        TransformBundle::from(Transform::from_translation(pos))
+        TransformBundle::from(Transform::from_translation(pos)),
     ));
 
     for i in 0..4 {
