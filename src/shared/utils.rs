@@ -3,11 +3,11 @@ use bevy_prototype_debug_lines::DebugLines;
 use bevy_rapier2d::prelude::{QueryFilter, RapierContext};
 
 pub const GROUND_CHECK_DIR: Vec2 = Vec2::new(0.0, -1.0);
-pub const GROUND_CHECK_TOI: f32 = 0.5;
 
 pub fn utils_ground_raycast(
     context: &Res<RapierContext>,
     ray_origin: Vec2,
+    max_toi: f32,
     result_entity: &mut Entity,
     result_point: &mut Vec2,
 ) -> bool {
@@ -15,7 +15,7 @@ pub fn utils_ground_raycast(
         context,
         ray_origin,
         GROUND_CHECK_DIR,
-        GROUND_CHECK_TOI,
+        max_toi,
         result_entity,
         result_point,
     );

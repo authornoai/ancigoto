@@ -10,6 +10,7 @@ pub struct TagGrounded;
 pub struct GroundRaycastPos {
     pub left_pos: Vec2,
     pub right_pos: Vec2,
+    pub max_toi: f32,
 }
 
 #[derive(Component, Default)]

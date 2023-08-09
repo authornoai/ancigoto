@@ -20,6 +20,7 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             ground_raycast_pos: GroundRaycastPos {
                 left_pos: Vec2::new(-7.0, -4.0),
                 right_pos: Vec2::new(7.0, -4.0),
+                max_toi: 4.1
             },
             ..default()
         },
