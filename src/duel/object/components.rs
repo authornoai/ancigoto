@@ -5,6 +5,8 @@ use bevy::prelude::*;
 pub struct TagDuelObject;
 #[derive(Component)]
 pub struct TagGrounded;
+#[derive(Component)]
+pub struct TagMagicRigid;
 
 #[derive(Component, Default)]
 pub struct GroundRaycastPos {

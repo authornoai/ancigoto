@@ -28,20 +28,44 @@ pub fn validate_is_grounded(
 
         let mut test_entity = entity;
         let mut result_toi = Vec2::ZERO;
-        if utils_ground_raycast(&context, left_origin, raycast_pos.max_toi,&mut test_entity, &mut result_toi)
-            && test_entity != entity
+        if utils_ground_raycast(
+            &context,
+            left_origin,
+            raycast_pos.max_toi,
+            &mut test_entity,
+            &mut result_toi,
+        ) && test_entity != entity
         {
             commands.entity(entity).insert(TagGrounded);
             continue;
         }
 
-        if utils_ground_raycast(&context, right_origin, raycast_pos.max_toi, &mut test_entity, &mut result_toi)
-            && test_entity != entity
+        if utils_ground_raycast(
+            &context,
+            right_origin,
+            raycast_pos.max_toi,
+            &mut test_entity,
+            &mut result_toi,
+        ) && test_entity != entity
         {
             commands.entity(entity).insert(TagGrounded);
             continue;
         }
 
         commands.entity(entity).remove::<TagGrounded>();
+    }
+}
+
+pub fn try_to_static_magic(
+    mut query: Query<(Entity, &Velocity, With<TagMagicRigid>, With<RigidBody>, With<TagGrounded>)>,
+    mut commands: Commands,
+) {
+    for (e, vel, _, _, _) in &mut query {
+        
+        if vel.linvel.length_squared() > 0.05 {
+            continue;
+        }
+
+        commands.entity(e).remove::<RigidBody>();
     }
 }

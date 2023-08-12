@@ -29,7 +29,7 @@ pub fn spawn_player(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         },
         TagPlayer,
-        Collider::cuboid(8.0, 8.0),
+        Collider::capsule(Vec2::new(0.0, -4.0), Vec2::new(0.0, 4.0), 4.0),
         RigidBody::Dynamic,
         ExternalForce::default(),
         Ccd::enabled(),
@@ -63,7 +63,17 @@ fn spawn_ceiling(mut commands: Commands) {
             Collider::cuboid(4.0, 4.0),
             RigidBody::Dynamic,
             TransformBundle::from(Transform::from_translation(pos)),
-            MoveableBundle::default(),
+            MoveableBundle
+            {
+                ground_raycast_pos: GroundRaycastPos {
+                    left_pos: Vec2::new(-4.0, -2.0),
+                    right_pos: Vec2::new(4.0, -2.0),
+                    max_toi: 2.1
+                },
+                ..default()
+            },
+            TagMagicRigid,
+            Velocity::default(),
         ));
     }
 }
