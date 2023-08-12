@@ -5,6 +5,7 @@ use bevy_rapier2d::prelude::{
 };
 
 use super::fighter::components::{FighterBundle, MovePower};
+use super::magic::components::MagicTargetBundle;
 use super::object::components::*;
 use super::player::components::TagPlayer;
 
@@ -74,6 +75,7 @@ fn spawn_ceiling(mut commands: Commands) {
             },
             TagMagicRigid,
             Velocity::default(),
+            MagicTargetBundle::default(),
         ));
     }
 }

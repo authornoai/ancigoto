@@ -5,6 +5,7 @@ pub mod health;
 pub mod object;
 pub mod player;
 pub mod fighter;
+pub mod magic;
 
 //self
 mod systems;
@@ -13,6 +14,7 @@ use self::health::HealthPlugin;
 use self::object::DuelObjectPlugin;
 use self::player::PlayerPlugin;
 use self::fighter::FighterPlugin;
+use self::magic::MagicPlugin;
 
 use self::systems::*;
 
@@ -25,6 +27,7 @@ impl Plugin for DuelPlugin {
             DuelObjectPlugin,
             FighterPlugin,
             PlayerPlugin,
+            MagicPlugin,
         ))
         .add_systems(Startup, spawn_player);
     }

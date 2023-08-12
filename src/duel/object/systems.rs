@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::{RapierContext, RigidBody, Velocity};
 
-use crate::shared::utils::utils_ground_raycast;
+use crate::{shared::utils::utils_ground_raycast, duel::magic::components::MagicWind};
 
 use super::components::*;
 
@@ -57,7 +57,7 @@ pub fn validate_is_grounded(
 }
 
 pub fn try_to_static_magic(
-    mut query: Query<(Entity, &Velocity, With<TagMagicRigid>, With<RigidBody>, With<TagGrounded>)>,
+    mut query: Query<(Entity, &Velocity, With<RigidBody>, With<TagMagicRigid>, With<TagGrounded>)>,
     mut commands: Commands,
 ) {
     for (e, vel, _, _, _) in &mut query {
@@ -66,6 +66,23 @@ pub fn try_to_static_magic(
             continue;
         }
 
-        commands.entity(e).remove::<RigidBody>();
+        commands.entity(e).insert(RigidBody::Fixed);
+    }
+}
+
+pub fn set_impulse_on_wind_attack(
+    mut query: Query<(Entity, &mut Velocity, &MagicWind)>,
+    mut commands: Commands
+) {
+    for (e, mut vel, wind) in &mut query
+    {
+        let wind_dir = wind.0;
+
+        commands.entity(e).remove::<MagicWind>()
+        .insert(RigidBody::Dynamic);
+
+        vel.linvel += wind_dir;
+
+        
     }
 }

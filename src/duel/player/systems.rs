@@ -1,20 +1,18 @@
-use bevy::{prelude::*, ecs::query::Has};
+use bevy::{ecs::query::Has, prelude::*};
 
 use super::components::TagPlayer;
-use crate::duel::{fighter::components::MoveVec, object::components::TagGrounded};
+use crate::duel::{
+    fighter::components::MoveVec, magic::events::EventOnWind, object::components::TagGrounded,
+};
 
 pub fn handle_movement_input(
-    mut query: Query<(
-        &mut MoveVec,
-        Has<TagGrounded>,
-        With<TagPlayer>,
-    )>,
+    mut query: Query<(&mut MoveVec, Has<TagGrounded>, With<TagPlayer>)>,
     input: Res<Input<KeyCode>>,
 ) {
     for (mut move_vec, has_ground, _) in &mut query {
         let mut movement_dir = Vec2::ZERO;
 
-        if input.just_pressed(KeyCode::Space) && has_ground{
+        if input.just_pressed(KeyCode::Space) && has_ground {
             movement_dir.y = 1.0;
         } else if input.pressed(KeyCode::S) {
             //movement_dir.y = -1.0;
@@ -30,4 +28,8 @@ pub fn handle_movement_input(
     }
 }
 
-
+pub fn handle_magic_attack(input: Res<Input<MouseButton>>, mut wind: EventWriter<EventOnWind>) {
+    if input.just_pressed(MouseButton::Left) {
+        wind.send(EventOnWind { pos: Vec2::ZERO, dir: Vec2::X, power: 32.0 });
+    }
+}
