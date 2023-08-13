@@ -2,7 +2,7 @@ use bevy::{ecs::query::Has, prelude::*};
 
 use super::components::TagPlayer;
 use crate::duel::{
-    fighter::components::MoveVec, magic::events::EventOnWind, object::components::TagGrounded,
+    fighter::components::{MoveVec, TagInSpellcast}, magic::events::EventOnWind, object::components::TagGrounded,
 };
 
 pub fn handle_movement_input(
@@ -31,5 +31,20 @@ pub fn handle_movement_input(
 pub fn handle_magic_attack(input: Res<Input<MouseButton>>, mut wind: EventWriter<EventOnWind>) {
     if input.just_pressed(MouseButton::Left) {
         wind.send(EventOnWind { pos: Vec2::ZERO, dir: Vec2::X, power: 32.0 });
+    }
+}
+
+pub fn handle_magic_creation(input: Res<Input<MouseButton>>,
+mut commands: Commands,
+player: Query<(Entity, With<TagPlayer>)>)
+{
+    let player = player.get_single().expect("No player!");
+
+    if input.just_pressed(MouseButton::Right)
+    {
+        commands.entity(player.0).insert(TagInSpellcast);
+    } else if input.just_released(MouseButton::Right)
+    {
+        commands.entity(player.0).remove::<TagInSpellcast>();
     }
 }

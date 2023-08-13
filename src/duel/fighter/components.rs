@@ -4,6 +4,9 @@ use bevy::prelude::*;
 pub struct TagFighter;
 
 #[derive(Component, Default)]
+pub struct TagInSpellcast;
+
+#[derive(Component, Default)]
 pub struct MoveVec(pub Vec2);
 
 #[derive(Component, Default)]
